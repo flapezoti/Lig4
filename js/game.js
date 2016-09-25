@@ -9,19 +9,28 @@ var board = {
 	startBoard: function() {
 		this.turn =	 0,
 		this.ctx = this.canvas.getContext("2d");
-		this.canvas.width = piece_size  * collumns + gap * (collumns - 1);
-		this.canvas.height = piece_size  * rows + gap  * (rows - 1);
-		this.positions = [];
+		this.canvas.width = (piece_size  * collumns + gap * (collumns + 1));
+		this.canvas.height = (piece_size  * rows + gap  * (rows + 1));
+		this.pieces = [];
 		for (i = 0; i < rows; i++) {
-			this.positions[i] = [];
+			this.pieces[i] = [];
 		}
 		this.zeroBoard();		
 		this.drawBoard();
 	},
 
 	drawBoard: function() {
-		var posx = piece_size/2;
-		var posy = piece_size/2;	
+		this.ctx.beginPath();
+		this.ctx.moveTo(0,0);
+		this.ctx.lineTo(this.canvas.width, 0 );
+		this.ctx.lineTo(this.canvas.width, this.canvas.height);
+		this.ctx.lineTo(0, this.canvas.height);
+		this.ctx.lineTo(0,0 );
+		this.ctx.strokeStyle = "#000000";
+		this.ctx.lineWidth = 3;
+		this.ctx.stroke();
+		var posx = piece_size/2 + gap;
+		var posy = piece_size/2 + gap;
 		for (i = 0; i < rows; i++){
 			for ( j = 0; j < collumns; j++){
 				this.ctx.beginPath();
@@ -37,7 +46,7 @@ var board = {
 	zeroBoard : function(){
 		for ( i = 0; i < rows; i++){
 			for ( j = 0; j < collumns; j++) {
-				this.positions[i][j] = 0;
+				this.pieces[i][j] = 0;
 			}	
 		}
 	}
