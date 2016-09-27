@@ -60,13 +60,8 @@ function getMouseXPos(evt) {
     return x;
 }
 
-function getChosenCollumn (mousepos){ //mudar para dowhile
-	for ( i = 0; i < collumns; i ++){
-		if ( mousepos >= (i * piece_size) && mousepos < ( i * piece_size + piece_size)) {
-			var collumn = i;
-		}
-	}
-	console.log(collumn);
+function getChosenCollumn (mouseXpos){
+	collumn = Math.floor((mouseXpos/piece_size));
 	return collumn;
 }
 
