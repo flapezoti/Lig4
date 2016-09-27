@@ -21,11 +21,7 @@ var board = {
 
 	drawBoard: function() {
 		this.ctx.beginPath();
-		this.ctx.moveTo(0,0);
-		this.ctx.lineTo(this.canvas.width, 0 );
-		this.ctx.lineTo(this.canvas.width, this.canvas.height);
-		this.ctx.lineTo(0, this.canvas.height);
-		this.ctx.lineTo(0,0 );
+		this.ctx.rect(0 , 0,  this.canvas.width, this.canvas.height);
 		this.ctx.strokeStyle = "#000000";
 		this.ctx.lineWidth = 3;
 		this.ctx.stroke();
