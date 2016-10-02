@@ -15,7 +15,6 @@ var board = {
 		for (i = 0; i < collumns; i++) {
 			this.pieces[i] = [];
 		}
-		//this.zeroBoard();		
 		this.drawBoard();
 	},
 
@@ -39,19 +38,17 @@ var board = {
 		}
 	},
 	addPiece : function(collumn){ 
-	this.pieces[collumn].push('1');
-	row = this.pieces[collumn].length - 1;
-	collumnPos = collumn * piece_size;
-	console.log(row);
-	console.log(this.pieces[collumn]);
-	rowPos = row * piece_size; 
-	this.ctx.clearRect(collumnPos, rowPos, piece_size, piece_size);
-	this.ctx.beginPath();	
-	this.ctx.arc(piece_size/2 + collumn  * (piece_size+gap), piece_size/2 + row  * (piece_size+gap) , piece_size/2, 0, Math.PI*2, false);
-	this.ctx.fillStyle = "#0000ff";
-	this.ctx.fill();
-	this.ctx.closePath();
-
+		this.pieces[collumn].push('1');
+		row = this.pieces[collumn].length - 1;
+		collumnPos = collumn * piece_size;
+		console.log(row);
+		console.log(this.pieces[collumn]);
+		rowPos = row * piece_size; 	
+		this.ctx.beginPath();	
+		this.ctx.arc(piece_size/2 + collumn  * (piece_size+gap), this.canvas.height - (piece_size/2 + row  * (piece_size+gap)) , piece_size/2, 0, Math.PI*2, false);
+		this.ctx.fillStyle = "#0000ff";
+		this.ctx.fill();
+		this.ctx.closePath();
 	},
 	isCollumnFull : function(collumn){
 		if ( this.pieces[collumn].length == rows ) {
@@ -85,5 +82,7 @@ board.canvas.addEventListener('mouseup', function (event) {
 	chosenCollumn = getChosenCollumn(mousepos);
 	if (!board.isCollumnFull(chosenCollumn)) {
 		board.addPiece (chosenCollumn);
+	} else {
+
 	}
 });
