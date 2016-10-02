@@ -1,87 +1,93 @@
-var rows = 6;
-var collumns = 7;
-var piece_size = 50;
-var gap = 0;
+var ROWS = 6;
+var COLLUMS = 7;
+var PIECE_SIZE = 50;
+var GAP = 0;
 
-var board = {
-	canvas : document.getElementById("myBoard"),
+var game = {
 	
-	startBoard: function() {
-		this.turn =	 0,
-		this.ctx = this.canvas.getContext("2d");
-		this.canvas.width = (piece_size  * collumns + gap * (collumns + 1));
-		this.canvas.height = (piece_size  * rows + gap  * (rows + 1));
-		this.pieces = [];
-		for (i = 0; i < collumns; i++) {
-			this.pieces[i] = [];
-		}
-		this.drawBoard();
-	},
+	board : {
+		canvas : document.getElementById("myBoard"),
+		
+		drawInitialBoard: function() {
+			this.ctx = this.canvas.getContext("2d");
+			this.canvas.width = (PIECE_SIZE  * COLLUMS + GAP * (COLLUMS + 1));
+			this.canvas.height = (PIECE_SIZE  * ROWS + GAP  * (ROWS + 1));			
+			this.ctx.beginPath();
+			this.ctx.rect(0 , 0,  this.canvas.width, this.canvas.height);
+			this.ctx.strokeStyle = "#000000";
+			this.ctx.lineWidth = 3;
+			this.ctx.stroke();
+			var posx = PIECE_SIZE/2 + GAP;
+			var posy = PIECE_SIZE/2 + GAP;
+			for (i = 0; i < ROWS; i++){
+				for ( j = 0; j < COLLUMS; j++){
+					this.ctx.beginPath();
+					this.ctx.arc(posx + (j  * (PIECE_SIZE+GAP)), posy + ( i * (PIECE_SIZE+GAP)), 25, 0, Math.PI*2, false);
+					this.ctx.fillStyle = "#000000";
+					this.ctx.fill();
+					this.ctx.closePath();
+				}
 
-	drawBoard: function() {
-		this.ctx.beginPath();
-		this.ctx.rect(0 , 0,  this.canvas.width, this.canvas.height);
-		this.ctx.strokeStyle = "#000000";
-		this.ctx.lineWidth = 3;
-		this.ctx.stroke();
-		var posx = piece_size/2 + gap;
-		var posy = piece_size/2 + gap;
-		for (i = 0; i < rows; i++){
-			for ( j = 0; j < collumns; j++){
-				this.ctx.beginPath();
-				this.ctx.arc(posx + (j  * (piece_size+gap)), posy + ( i * (piece_size+gap)), 25, 0, Math.PI*2, false);
-				this.ctx.fillStyle = "#000000";
-				this.ctx.fill();
-				this.ctx.closePath();
 			}
-
-		}
+		},
+		drawPiece : function(collumn, row){ 				
+			collumnPos = collumn * PIECE_SIZE;
+			rowPos = row * PIECE_SIZE; 	
+			this.ctx.beginPath();	
+			this.ctx.arc(PIECE_SIZE/2 + collumn  * (PIECE_SIZE+GAP), this.canvas.height - (PIECE_SIZE/2 + row  * (PIECE_SIZE+GAP)) , PIECE_SIZE/2, 0, Math.PI*2, false);
+			this.ctx.fillStyle = "#0000ff";
+			this.ctx.fill();
+			this.ctx.closePath();
+		},
+		
 	},
-	addPiece : function(collumn){ 
+
+	startGame : function () {
+		this.pieces = [];
+		this.player = 0;
+		this.winner = '';
+		for ( i = 0; i < COLLUMS; i++) {
+			this.pieces.push([]);
+		}
+		this.board.drawInitialBoard();
+	},
+
+	addPiece : function(collumn){
 		this.pieces[collumn].push('1');
 		row = this.pieces[collumn].length - 1;
-		collumnPos = collumn * piece_size;
-		console.log(row);
-		console.log(this.pieces[collumn]);
-		rowPos = row * piece_size; 	
-		this.ctx.beginPath();	
-		this.ctx.arc(piece_size/2 + collumn  * (piece_size+gap), this.canvas.height - (piece_size/2 + row  * (piece_size+gap)) , piece_size/2, 0, Math.PI*2, false);
-		this.ctx.fillStyle = "#0000ff";
-		this.ctx.fill();
-		this.ctx.closePath();
+		this.board.drawPiece(collumn, row);
 	},
+
 	isCollumnFull : function(collumn){
-		if ( this.pieces[collumn].length == rows ) {
-			return true;
+		var full;
+		if ( this.pieces[collumn].length == ROWS ) {
+			full = true;
 		} else {
-			return false;
+			full = false;
 		}
+		return full;
 	}
-}
+};
 
-
-
-function startGame(){
-	board.startBoard();
-}
 
 function getMouseXPos(evt) {
-    var rect = board.canvas.getBoundingClientRect();
+    var rect = this.game.board.canvas.getBoundingClientRect();
     x = evt.clientX - rect.left;
     return x;
 }
 
 function getChosenCollumn (mouseXpos){
-	collumn = Math.floor((mouseXpos/piece_size));
+	collumn = Math.floor((mouseXpos/PIECE_SIZE));
 	return collumn;
 }
 
-startGame();
-board.canvas.addEventListener('mouseup', function (event) {
+
+game.startGame();
+game.board.canvas.addEventListener('mouseup', function (event) {
 	var mousepos = getMouseXPos(event);
 	chosenCollumn = getChosenCollumn(mousepos);
-	if (!board.isCollumnFull(chosenCollumn)) {
-		board.addPiece (chosenCollumn);
+	if (!game.isCollumnFull(chosenCollumn)) {
+		game.addPiece(chosenCollumn);
 	} else {
 
 	}
