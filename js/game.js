@@ -52,6 +52,13 @@ var board = {
 	this.ctx.fill();
 	this.ctx.closePath();
 
+	},
+	isCollumnFull : function(collumn){
+		if ( this.pieces[collumn].length == rows ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
@@ -76,5 +83,7 @@ startGame();
 board.canvas.addEventListener('mouseup', function (event) {
 	var mousepos = getMouseXPos(event);
 	chosenCollumn = getChosenCollumn(mousepos);
-	board.addPiece (chosenCollumn);
+	if (!board.isCollumnFull(chosenCollumn)) {
+		board.addPiece (chosenCollumn);
+	}
 });
