@@ -12,10 +12,10 @@ var board = {
 		this.canvas.width = (piece_size  * collumns + gap * (collumns + 1));
 		this.canvas.height = (piece_size  * rows + gap  * (rows + 1));
 		this.pieces = [];
-		for (i = 0; i < rows; i++) {
+		for (i = 0; i < collumns; i++) {
 			this.pieces[i] = [];
 		}
-		this.zeroBoard();		
+		//this.zeroBoard();		
 		this.drawBoard();
 	},
 
@@ -38,14 +38,6 @@ var board = {
 
 		}
 	},
-
-	zeroBoard : function(){
-		for ( i = 0; i < rows; i++){
-			for ( j = 0; j < collumns; j++) {
-				this.pieces[i][j] = 0;
-			}	
-		}
-	}
 }
 
 
@@ -70,16 +62,21 @@ function addPiece(collumn){
 		se estiver cheia pedir outra coluna,
 		senão marcar a pedra na linha e coluna
 	*/
-	collumnpos = collumn * piece_size;
-	console.log(collumnpos);
-	board.ctx.clearRect(collumnpos, 0, piece_size, piece_size);
+	board.pieces[collumn].push('1');
+	row = board.pieces[collumn].length - 1;
+	collumnPos = collumn * piece_size;
+	console.log(row);
+	console.log(board.pieces[collumn]);
+	rowPos = row * piece_size; 
+	board.ctx.clearRect(collumnPos, rowPos, piece_size, piece_size);
 	board.ctx.beginPath();	
-	board.ctx.arc(25 + collumn  * (piece_size+gap), 25 , piece_size/2, 0, Math.PI*2, false);
+	board.ctx.arc(piece_size/2 + collumn  * (piece_size+gap), piece_size/2 + row  * (piece_size+gap) , piece_size/2, 0, Math.PI*2, false);
 	board.ctx.fillStyle = "#0000ff";
 	board.ctx.fill();
 	board.ctx.closePath();
 
 }
+
 
 startGame();
 board.canvas.addEventListener('mouseup', function (event) {
@@ -87,5 +84,3 @@ board.canvas.addEventListener('mouseup', function (event) {
 	chosenCollumn = getChosenCollumn(mousepos);
 	addPiece (chosenCollumn);
 });
-
-
