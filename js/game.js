@@ -38,6 +38,21 @@ var board = {
 
 		}
 	},
+	addPiece : function(collumn){ 
+	this.pieces[collumn].push('1');
+	row = this.pieces[collumn].length - 1;
+	collumnPos = collumn * piece_size;
+	console.log(row);
+	console.log(this.pieces[collumn]);
+	rowPos = row * piece_size; 
+	this.ctx.clearRect(collumnPos, rowPos, piece_size, piece_size);
+	this.ctx.beginPath();	
+	this.ctx.arc(piece_size/2 + collumn  * (piece_size+gap), piece_size/2 + row  * (piece_size+gap) , piece_size/2, 0, Math.PI*2, false);
+	this.ctx.fillStyle = "#0000ff";
+	this.ctx.fill();
+	this.ctx.closePath();
+
+	}
 }
 
 
@@ -57,30 +72,9 @@ function getChosenCollumn (mouseXpos){
 	return collumn;
 }
 
-function addPiece(collumn){ 
-	/*achar a linha correta, identificar se a coluna já está cheia,
-		se estiver cheia pedir outra coluna,
-		senão marcar a pedra na linha e coluna
-	*/
-	board.pieces[collumn].push('1');
-	row = board.pieces[collumn].length - 1;
-	collumnPos = collumn * piece_size;
-	console.log(row);
-	console.log(board.pieces[collumn]);
-	rowPos = row * piece_size; 
-	board.ctx.clearRect(collumnPos, rowPos, piece_size, piece_size);
-	board.ctx.beginPath();	
-	board.ctx.arc(piece_size/2 + collumn  * (piece_size+gap), piece_size/2 + row  * (piece_size+gap) , piece_size/2, 0, Math.PI*2, false);
-	board.ctx.fillStyle = "#0000ff";
-	board.ctx.fill();
-	board.ctx.closePath();
-
-}
-
-
 startGame();
 board.canvas.addEventListener('mouseup', function (event) {
 	var mousepos = getMouseXPos(event);
 	chosenCollumn = getChosenCollumn(mousepos);
-	addPiece (chosenCollumn);
+	board.addPiece (chosenCollumn);
 });
