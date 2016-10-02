@@ -3,8 +3,8 @@ var COLLUMS = 7;
 var PIECE_SIZE = 50;
 var GAP = 0;
 
+var player_names = ["Amarelo", "Azul"];
 var game = {
-	
 	board : {
 		canvas : document.getElementById("myBoard"),
 		
@@ -30,12 +30,18 @@ var game = {
 
 			}
 		},
-		drawPiece : function(collumn, row){ 				
+		drawPiece : function(collumn, row, player){
+			var pieceColor;
 			collumnPos = collumn * PIECE_SIZE;
 			rowPos = row * PIECE_SIZE; 	
+			switch (player)	{
+				case 0 : pieceColor = "yellow"; break;
+				case 1 : pieceColor = "blue"; break;
+
+			}
 			this.ctx.beginPath();	
 			this.ctx.arc(PIECE_SIZE/2 + collumn  * (PIECE_SIZE+GAP), this.canvas.height - (PIECE_SIZE/2 + row  * (PIECE_SIZE+GAP)) , PIECE_SIZE/2, 0, Math.PI*2, false);
-			this.ctx.fillStyle = "#0000ff";
+			this.ctx.fillStyle = pieceColor;
 			this.ctx.fill();
 			this.ctx.closePath();
 		},
@@ -52,13 +58,13 @@ var game = {
 		this.board.drawInitialBoard();
 	},
 
-	addPiece : function(collumn){
-		this.pieces[collumn].push('1');
+	addPiece : function(collumn, player){
+		this.pieces[collumn].push(player);
 		row = this.pieces[collumn].length - 1;
-		this.board.drawPiece(collumn, row);
+		this.board.drawPiece(collumn, row, player);
 	},
 
-	isCollumnFull : function(collumn){
+	CollumnFull : function(collumn){
 		var full;
 		if ( this.pieces[collumn].length == ROWS ) {
 			full = true;
@@ -66,6 +72,22 @@ var game = {
 			full = false;
 		}
 		return full;
+	},
+
+	changePlayer: function(){
+		if ( this.player == 0) {
+			this.player = 1;
+		} else {
+			this.player = 0;
+		}
+	}, 
+
+	gameEnd : function(){
+		if ( this.winner == ''){
+			return false;
+		} else {
+			return true;
+		}
 	}
 };
 
@@ -81,14 +103,21 @@ function getChosenCollumn (mouseXpos){
 	return collumn;
 }
 
+function play(event){
+	if(!game.gameEnd()){
+		var mousepos = getMouseXPos(event);
+		chosenCollumn = getChosenCollumn(mousepos);
+		if (!game.CollumnFull(chosenCollumn)) {
+			game.addPiece(chosenCollumn, game.player);
+			game.changePlayer();
+			document.getElementById("status").innerHTML = "É a vez do jogador " + player_names[game.player];
+				
+		} else {
+
+		}
+	}
+}
+
 
 game.startGame();
-game.board.canvas.addEventListener('mouseup', function (event) {
-	var mousepos = getMouseXPos(event);
-	chosenCollumn = getChosenCollumn(mousepos);
-	if (!game.isCollumnFull(chosenCollumn)) {
-		game.addPiece(chosenCollumn);
-	} else {
-
-	}
-});
+game.board.canvas.addEventListener('mouseup', play);
