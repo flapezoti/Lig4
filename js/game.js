@@ -52,7 +52,7 @@ var game = {
 		this.move = 0;
 		this.pieces = [];
 		this.player = 0;
-		this.winner = '';
+		this.winner = 'none' ;
 		for ( i = 0; i < COLLUMS; i++) {
 			this.pieces.push([]);
 		}
@@ -64,7 +64,7 @@ var game = {
 		this.move ++;
 		row = this.pieces[collumn].length - 1;
 		this.board.drawPiece(collumn, row, player);
-		//this.checkWin(collumn, row, player);
+		this.checkWin(collumn, row, player);
 		if (!this.gameEnd()) {
 			this.checkTie();
 		}
@@ -85,14 +85,25 @@ var game = {
 
 	checkWin : function(collumn, row, player) {
 		var win = false;
-		win = checkVerticalWin(collumn, row);
+		if (this.verticalWin(collumn, row, player)) {
+			win = true;
+		}
 		if (win) {
-			this.winner = player;
+			this.winner = player; 
+		}
+	},
+
+	verticalWin: function(collumn, row, player) {
+		var win = false;
+		if ( this.pieces[collumn].length >= 4 ) {
+			if ( (this.pieces[collumn][row] == player) && (this.pieces[collumn][row - 1] == player) && (this.pieces[collumn][row - 2] == player) && (this.pieces[collumn][row - 3] == player) ){
+				win = true;
+			}
 		}
 		return win;
 	},
 
-	CollumnFull : function(collumn){
+	collumnFull : function(collumn){
 		var full;
 		if ( this.pieces[collumn].length == ROWS ) {
 			full = true;
@@ -111,10 +122,10 @@ var game = {
 	}, 
 
 	gameEnd : function(){
-		if (this.winner == ''){
-			return false;
-		} else {
+		if (this.winner != 'none'){
 			return true;
+		} else {
+			return false;
 		}
 	}
 };
@@ -136,13 +147,16 @@ function play(event){
 		var mousepos = getMouseXPos(event);
 		chosenCollumn = getChosenCollumn(mousepos);
 
-		if (!game.CollumnFull(chosenCollumn)) {
+		if (!game.collumnFull(chosenCollumn)) {
 			game.addPiece(chosenCollumn, game.player);
 			if(game.gameEnd()){
 				if( game.winner == "tie" ) {
 					document.getElementById("status").innerHTML = "O jogo empatou";
-					document.getElementById("do").innerHTML = "Recomece a partida";
+					
+				} else {
+					document.getElementById("status").innerHTML = "O jogador " + player_names[game.player] + " ganhou";
 				}
+				document.getElementById("do").innerHTML = "Recomece a partida";
 			} else {
 			game.changePlayer();
 			document.getElementById("status").innerHTML = "É a vez do jogador " + player_names[game.player];
