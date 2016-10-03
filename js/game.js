@@ -49,6 +49,7 @@ var game = {
 	},
 
 	startGame : function () {
+		this.move = 0;
 		this.pieces = [];
 		this.player = 0;
 		this.winner = '';
@@ -60,29 +61,36 @@ var game = {
 
 	addPiece : function(collumn, player){
 		this.pieces[collumn].push(player);
+		this.move ++;
 		row = this.pieces[collumn].length - 1;
 		this.board.drawPiece(collumn, row, player);
-	
+		//this.checkWin(collumn, row, player);
 		if (!this.gameEnd()) {
 			this.checkTie();
 		}
 	},
 
 	checkTie : function(){
-		var tie = true;
-		var i = 0;
-		while((i < COLLUMS) && (tie)){
-			if ( this.pieces[i].length != ROWS) {
-				tie = false;
-			}
-			i++;
+		var tie;
+		if ( this.move == COLLUMS * ROWS) {
+			tie = true;
+		} else {
+			tie = false;
 		}
+
 		if (tie) {
 			this.winner = "tie";
 		}
 	},
 
-	
+	checkWin : function(collumn, row, player) {
+		var win = false;
+		win = checkVerticalWin(collumn, row);
+		if (win) {
+			this.winner = player;
+		}
+		return win;
+	},
 
 	CollumnFull : function(collumn){
 		var full;
