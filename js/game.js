@@ -62,7 +62,27 @@ var game = {
 		this.pieces[collumn].push(player);
 		row = this.pieces[collumn].length - 1;
 		this.board.drawPiece(collumn, row, player);
+	
+		if (!this.gameEnd()) {
+			this.checkTie();
+		}
 	},
+
+	checkTie : function(){
+		var tie = true;
+		var i = 0;
+		while((i < COLLUMS) && (tie)){
+			if ( this.pieces[i].length != ROWS) {
+				tie = false;
+			}
+			i++;
+		}
+		if (tie) {
+			this.winner = "tie";
+		}
+	},
+
+	
 
 	CollumnFull : function(collumn){
 		var full;
@@ -83,7 +103,7 @@ var game = {
 	}, 
 
 	gameEnd : function(){
-		if ( this.winner == ''){
+		if (this.winner == ''){
 			return false;
 		} else {
 			return true;
@@ -107,17 +127,23 @@ function play(event){
 	if(!game.gameEnd()){
 		var mousepos = getMouseXPos(event);
 		chosenCollumn = getChosenCollumn(mousepos);
+
 		if (!game.CollumnFull(chosenCollumn)) {
 			game.addPiece(chosenCollumn, game.player);
+			if(game.gameEnd()){
+				if( game.winner == "tie" ) {
+					document.getElementById("status").innerHTML = "O jogo empatou";
+					document.getElementById("do").innerHTML = "Recomece a partida";
+				}
+			} else {
 			game.changePlayer();
 			document.getElementById("status").innerHTML = "É a vez do jogador " + player_names[game.player];
-				
+			}
 		} else {
 
 		}
 	}
 }
-
 
 game.startGame();
 game.board.canvas.addEventListener('mouseup', play);
